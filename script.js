@@ -76,13 +76,6 @@ const CONFIG = {
     ]
   },
 
-  music: {
-    enabled: false,
-    defaultVolume: 0.35,
-    autoplayOnEnter: false,
-    tracks: []
-  },
-
   links: [
     {
       title: "Discord",
@@ -109,9 +102,9 @@ const CONFIG = {
   ],
 
   theme: {
-    accentColor: "#5865f2",
-    accentGlow: "rgba(88, 101, 242, 0.45)",
-    secondaryAccent: "#8892ff",
+    accentColor: "#b5f36c",
+    accentGlow: "rgba(181, 243, 108, 0.25)",
+    secondaryAccent: "#78d6b1",
     enterText: "Cliquez n'importe où pour entrer...",
     particlesEffect: "none", 
     clickSparks: true,
@@ -136,10 +129,6 @@ const ICONS = {
   'code': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`,
   'sparkles': `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></svg>`,
   'crown': `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
-  'prev': `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 20L9 12l10-8v16zM5 4h3v16H5V4z"/></svg>`,
-  'next': `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 4l10 8-10 8V4zm11 0h3v16h-3V4z"/></svg>`,
-  'play': `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>`,
-  'pause': `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`,
   'external-link': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>`,
   'copy': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`,
   'cpu': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>`,
@@ -161,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initDiscordStatus();
   initSteamGames();
   initPcSpecs();
-  initAudio();
   initClickOverlay();
   init3DTilt();
   initParticles();
@@ -1152,205 +1140,6 @@ function showToast(message) {
   }, 2600);
 }
 
-let audio = null;
-let isPlaying = false;
-let currentTrackIndex = 0;
-let playlist = [];
-
-function getPlaylist() {
-  if (Array.isArray(CONFIG.music?.tracks) && CONFIG.music.tracks.length > 0) {
-    return CONFIG.music.tracks;
-  }
-  if (CONFIG.music?.audioSrc) {
-    return [{
-      title: CONFIG.music.title || "Track",
-      artist: CONFIG.music.artist || "Artist",
-      audioSrc: CONFIG.music.audioSrc
-    }];
-  }
-  return [];
-}
-
-function updateTrackDisplay(track) {
-  const titleEl = document.getElementById('track-title');
-  const artistEl = document.getElementById('track-artist');
-  const trackText = document.querySelector('.track-text');
-
-  if (trackText) {
-    trackText.classList.add('fade-transition');
-    setTimeout(() => {
-      if (titleEl) titleEl.textContent = track.title || "Track";
-      if (artistEl) artistEl.textContent = track.artist || "Artist";
-      trackText.classList.remove('fade-transition');
-    }, 120);
-  } else {
-    if (titleEl) titleEl.textContent = track.title || "Track";
-    if (artistEl) artistEl.textContent = track.artist || "Artist";
-  }
-
-  const skipBtn = document.getElementById('skip-btn');
-  const prevBtn = document.getElementById('prev-btn');
-  if (playlist.length > 1) {
-    const nextIdx = (currentTrackIndex + 1) % playlist.length;
-    const prevIdx = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-    if (skipBtn) skipBtn.title = `Morceau suivant (Skip) : ${playlist[nextIdx].title}`;
-    if (prevBtn) prevBtn.title = `Morceau précédent : ${playlist[prevIdx].title}`;
-  }
-
-  if ('mediaSession' in navigator) {
-    try {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: track.title || "Track",
-        artist: track.artist || "Artist"
-      });
-    } catch (_) {}
-  }
-}
-
-function loadTrack(index, autoPlay = false) {
-  if (!playlist.length) return;
-  currentTrackIndex = ((index % playlist.length) + playlist.length) % playlist.length;
-  const track = playlist[currentTrackIndex];
-
-  updateTrackDisplay(track);
-
-  if (!audio) {
-    audio = document.getElementById('bg-audio');
-  }
-
-  if (audio) {
-    audio.src = track.audioSrc;
-    if (autoPlay) {
-      audio.play().then(() => {
-        isPlaying = true;
-        updatePlayerUI(true);
-      }).catch(err => {
-        console.warn("Lecture audio bloquée ou restreinte :", err);
-      });
-    }
-  }
-}
-
-function nextTrack(autoPlay = true) {
-  if (!playlist.length) return;
-  const nextIdx = (currentTrackIndex + 1) % playlist.length;
-  loadTrack(nextIdx, autoPlay || isPlaying);
-}
-
-function prevTrack(autoPlay = true) {
-  if (!playlist.length) return;
-  if (audio && audio.currentTime > 3) {
-    audio.currentTime = 0;
-    if (autoPlay || isPlaying) {
-      audio.play().catch(() => {});
-    }
-    return;
-  }
-  const prevIdx = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-  loadTrack(prevIdx, autoPlay || isPlaying);
-}
-
-function updatePlayerUI(playing) {
-  const playBtn = document.getElementById('play-btn');
-  const musicDock = document.getElementById('music-dock');
-  const vinyl = document.getElementById('vinyl-disc');
-
-  if (playBtn) {
-    playBtn.innerHTML = playing ? ICONS['pause'] : ICONS['play'];
-  }
-  if (musicDock) {
-    musicDock.classList.toggle('playing', playing);
-  }
-  if (vinyl) {
-    vinyl.classList.toggle('playing', playing);
-  }
-}
-
-function initAudio() {
-  const musicDock = document.getElementById('music-dock');
-  if (!CONFIG.music || !CONFIG.music.enabled) {
-    if (musicDock) musicDock.style.display = 'none';
-    return;
-  }
-
-  playlist = getPlaylist();
-  if (playlist.length === 0) {
-    if (musicDock) musicDock.style.display = 'none';
-    return;
-  }
-
-  audio = document.getElementById('bg-audio');
-  if (!audio) return;
-
-  audio.volume = CONFIG.music.defaultVolume !== undefined ? CONFIG.music.defaultVolume : 0.35;
-  audio.loop = false;
-
-  loadTrack(0, false);
-
-  audio.addEventListener('ended', () => {
-    nextTrack(true);
-  });
-
-  const playBtn = document.getElementById('play-btn');
-  const skipBtn = document.getElementById('skip-btn');
-  const prevBtn = document.getElementById('prev-btn');
-  const volumeSlider = document.getElementById('volume-slider');
-
-  if (playBtn) {
-    playBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      togglePlay();
-    });
-  }
-
-  if (skipBtn) {
-    skipBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      nextTrack(true);
-    });
-  }
-
-  if (prevBtn) {
-    prevBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      prevTrack(true);
-    });
-  }
-
-  if (volumeSlider) {
-    volumeSlider.value = audio.volume * 100;
-    volumeSlider.addEventListener('input', (e) => {
-      audio.volume = e.target.value / 100;
-    });
-  }
-
-  if ('mediaSession' in navigator) {
-    try {
-      navigator.mediaSession.setActionHandler('play', () => togglePlay(true));
-      navigator.mediaSession.setActionHandler('pause', () => togglePlay(false));
-      navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack(true));
-      navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack(true));
-    } catch (_) {}
-  }
-}
-
-function togglePlay(forcePlay) {
-  if (!audio) return;
-
-  if (forcePlay === true || (!isPlaying && forcePlay !== false)) {
-    audio.play().then(() => {
-      isPlaying = true;
-      updatePlayerUI(true);
-    }).catch(err => {
-      console.warn("Autoplay restreint par le navigateur :", err);
-    });
-  } else {
-    audio.pause();
-    isPlaying = false;
-    updatePlayerUI(false);
-  }
-}
-
 function initClickOverlay() {
   const overlay = document.getElementById('click-overlay');
   const enterText = document.getElementById('enter-text');
@@ -1360,10 +1149,6 @@ function initClickOverlay() {
 
   overlay.addEventListener('click', () => {
     overlay.classList.add('hidden');
-
-    if (CONFIG.music.enabled && CONFIG.music.autoplayOnEnter) {
-      togglePlay(true);
-    }
   });
 }
 
@@ -1454,7 +1239,6 @@ function initClickSparks() {
   if (!CONFIG.theme.clickSparks) return;
 
   window.addEventListener('click', (e) => {
-    if (e.target.closest('#music-dock, .volume-slider')) return;
     createSparks(e.clientX, e.clientY);
   });
 }

@@ -48,6 +48,17 @@
 
   <div class="main-layout" id="main-layout">
 
+    <header class="portfolio-topbar">
+      <div class="portfolio-brand">
+        <span class="portfolio-brand-mark">N</span>
+        <span class="portfolio-brand-name">noobie<span>.exe</span></span>
+      </div>
+      <div class="portfolio-topbar-note">
+        <span class="topbar-status-dot"></span>
+        DÉVELOPPEUR INDÉPENDANT <span class="topbar-divider">/</span> FRANCE
+      </div>
+    </header>
+
     <div class="card-perspective main-card-perspective">
       <div class="main-column-content">
         <main class="profile-card" id="profile-card">
@@ -95,58 +106,51 @@
           <p class="profile-bio" id="profile-bio">Développeur basé en France, créant des outils Wii U, des logiciels et des projets communautaires.</p>
         </section>
 
-        <section class="music-dock" id="music-dock">
-          <div class="track-info">
-            <div class="vinyl-disc" id="vinyl-disc">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </div>
-            <div class="track-text">
-              <span class="track-title" id="track-title">Morceau en cours</span>
-              <span class="track-artist" id="track-artist">Artiste</span>
-            </div>
+        <section class="about-section" aria-labelledby="about-title">
+          <div class="about-heading-row">
+            <h2 class="links-heading" id="about-title">À propos</h2>
+            <span class="about-kicker">EN QUELQUES MOTS</span>
           </div>
-
-          <div class="visualizer" id="visualizer" aria-label="Visualiseur audio">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </div>
-
-          <div class="music-controls">
-            <button class="control-btn prev-btn" id="prev-btn" aria-label="Morceau précédent" title="Morceau précédent">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 20L9 12l10-8v16zM5 4h3v16H5V4z"></path>
-              </svg>
-            </button>
-
-            <button class="play-btn" id="play-btn" aria-label="Lecture / Pause" title="Lecture / Pause">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="6 3 20 12 6 21 6 3"></polygon>
-              </svg>
-            </button>
-
-            <button class="control-btn skip-btn" id="skip-btn" aria-label="Passer au morceau suivant (Skip)" title="Passer au morceau suivant (Skip)">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M5 4l10 8-10 8V4zm11 0h3v16h-3V4z"></path>
-              </svg>
-            </button>
-
-            <div class="volume-wrapper" title="Volume">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-              </svg>
-              <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="35">
+          <div class="about-grid">
+            <div class="about-item about-age">
+              <span class="about-label">ÂGE</span>
+              <p class="about-value">15 ans</p>
+            </div>
+            <div class="about-item about-studies">
+              <span class="about-label">ÉTUDES</span>
+              <p class="about-value">Première</p>
+              <p class="about-detail">Spécialités : Mathématiques, Physique-Chimie et NSI</p>
+            </div>
+            <div class="about-item about-experience">
+              <div class="about-experience-copy">
+                <span class="about-label">EXPÉRIENCE</span>
+                <p class="about-value">Python, mon langage principal</p>
+                <p class="about-detail">J’ai beaucoup d’expérience en Python. C++ et Rust ne sont pas mes domaines d’expertise : je m’aide de l’IA lorsque je travaille avec ces langages.</p>
+              </div>
+              <div class="about-tags" aria-label="Langages">
+                <span class="about-tag about-tag-primary">Python · à l’aise</span>
+                <span class="about-tag">C++ · avec l’IA</span>
+                <span class="about-tag">Rust · avec l’IA</span>
+              </div>
             </div>
           </div>
         </section>
 
-        <nav class="links-container" id="links-container">
+        <section class="future-section" aria-labelledby="future-title">
+          <div class="future-heading-row">
+            <h2 id="future-title">Études futures</h2>
+            <span class="future-pill">OBJECTIF À LONG TERME</span>
+          </div>
+          <p class="future-role">Ingénieur logiciel</p>
+          <p class="future-detail">J’aimerais me spécialiser dans les systèmes d’exploitation pour consoles.</p>
+          <div class="future-focus">
+            <span class="future-focus-dot"></span>
+            Systèmes pour consoles
+          </div>
+        </section>
+
+        <h2 class="links-heading">Liens & projets</h2>
+        <nav class="links-container" id="links-container" aria-label="Liens et projets">
           
         </nav>
 
@@ -309,8 +313,6 @@
     </svg>
     <span id="toast-text">Copié dans le presse-papier !</span>
   </div>
-
-  <audio id="bg-audio" preload="auto"></audio>
 
   <script src="script.js" defer></script>
 </body>
